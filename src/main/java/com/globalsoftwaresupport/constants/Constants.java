@@ -21,5 +21,6 @@ public class Constants {
 	public static final String COUNTRY = "Country";
 	
 	public static final String STUDENT_SAVED = "Student saved successfully!";
+	public static final String LOGIN_IMAGE_URL = "images/login_icon.png";
 
 }
