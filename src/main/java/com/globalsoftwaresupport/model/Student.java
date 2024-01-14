@@ -4,11 +4,20 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-
-import com.vaadin.flow.component.polymertemplate.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Id;
 
 @Entity
 public class Student {
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,12 +35,29 @@ public class Student {
 	@Column
 	private String country;
 	
-	public Student(String name, int age, int zipCode, String country) {
+	@ManyToOne
+	@JoinColumn(name = "status_id")
+	private Status status;
+	
+	public Student() {
+		
+	}
+	
+	public Student(String name, int age, int zipCode, String country, Status status) {
 		super();
 		this.name = name;
 		this.age = age;
 		this.zipCode = zipCode;
 		this.country = country;
+		this.status = status; 
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	public String getName() {

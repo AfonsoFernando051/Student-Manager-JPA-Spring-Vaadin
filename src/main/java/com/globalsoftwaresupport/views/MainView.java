@@ -5,10 +5,15 @@ import java.util.List;
 
 import com.globalsoftwaresupport.model.Status;
 import com.globalsoftwaresupport.model.Student;
+import com.globalsoftwaresupport.services.StudentService;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -16,11 +21,13 @@ import com.vaadin.flow.router.Route;
 @Route(value = "")
 public class MainView extends VerticalLayout{
 	
+	private final StudentService studentService;
 	private LogoLayout logoLayout;
 	private Grid<Student> grid;
+	private TextField filterField;
 	
-	public MainView() {
-		
+	public MainView(StudentService studentService) {
+		this.studentService = studentService;
 		setSizeFull();
 		setAlignItems(Alignment.CENTER);
 		
@@ -28,16 +35,28 @@ public class MainView extends VerticalLayout{
 		configureGrid();
 		
 		loadStudents();
-		add(logoLayout, grid);
+		add(logoLayout, createToolBar(),grid);
 	}
 	
+	private Component createToolBar() {
+		filterField.setPlaceholder("Filter by name...");
+		filterField.setClearButtonVisible(true);
+		filterField.setValueChangeMode(ValueChangeMode.LAZY);
+		filterField.addValueChangeListener(e -> updateStudents());
+		return new HorizontalLayout(filterField);
+	}
+
+	private void updateStudents() {
+		grid.setItems(studentService.find(filterField.getValue()));
+	}
+
 	private void configureGrid() {
 		grid.setSizeFull();
 		grid.setColumns("country", "zipCode");
 		grid.addColumn(s -> s.getName()).setHeader("Name");
 		grid.addColumn(s -> s.getAge()).setHeader("Age");
 
-		/*grid.addComponentColumn(s -> {
+		grid.addComponentColumn(s -> {
 			Icon icon;
 			
 			if(s.getStatus().getName().equals("ATIVO")) {
@@ -52,23 +71,19 @@ public class MainView extends VerticalLayout{
 			}
 			
 			return icon;
-		}).setHeader("Status");*/
+		}).setHeader("Status");
 		
 		grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
 	}
 
 	private void loadStudents() {
-		List<Student>students = new ArrayList<>();
-		students.add(new Student("Fernando", 22, 1234, "BR"));
-		students.add(new Student("Ana", 22, 1234, "BR"));
-		students.add(new Student("Luiz", 22, 1234, "BR"));
-
-		grid.setItems(students);
+		grid.setItems(studentService.findAll());
 	}
 	
 	private void createFieldVariables() {
-		logoLayout = new LogoLayout();
-		grid = new Grid<>(Student.class);
+		this.logoLayout = new LogoLayout();
+		this.grid = new Grid<>(Student.class);
+		this.filterField = new TextField();
 	}
 }
