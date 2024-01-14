@@ -1,12 +1,13 @@
 package com.globalsoftwaresupport.views;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.MessageFormat;
 
-import com.globalsoftwaresupport.model.Status;
+import com.globalsoftwaresupport.constants.Constants;
 import com.globalsoftwaresupport.model.Student;
 import com.globalsoftwaresupport.services.StudentService;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -16,6 +17,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.Lumo;
 
 @PageTitle(value = "Home")
 @Route(value = "")
@@ -25,6 +27,8 @@ public class MainView extends VerticalLayout{
 	private LogoLayout logoLayout;
 	private Grid<Student> grid;
 	private TextField filterField;
+	private Checkbox themeToggle;
+	private static boolean isChecked;
 	
 	public MainView(StudentService studentService) {
 		this.studentService = studentService;
@@ -38,12 +42,38 @@ public class MainView extends VerticalLayout{
 		add(logoLayout, createToolBar(),grid);
 	}
 	
+	private Checkbox createToggle() {
+		themeToggle = new Checkbox("Dark Mode");
+		themeToggle.setValue(isChecked);
+		themeToggle.addValueChangeListener(e -> {
+			MainView.isChecked = !isChecked;
+			setTheme(isChecked);
+		});
+		
+		return themeToggle;
+	}
+
+	private void setTheme(boolean dark) {
+		var	js = MessageFormat.format("""
+				document.documentElement.setAttribute("theme", "{0}")
+				""", dark ? Lumo.DARK : Lumo.LIGHT);
+		
+		getElement().executeJs(js);
+	}
+
 	private Component createToolBar() {
 		filterField.setPlaceholder("Filter by name...");
 		filterField.setClearButtonVisible(true);
 		filterField.setValueChangeMode(ValueChangeMode.LAZY);
 		filterField.addValueChangeListener(e -> updateStudents());
-		return new HorizontalLayout(filterField);
+		
+		Button addStudentButton = new Button(Constants.ADD_STUDENT);
+		Button removeStudentButton = new Button(Constants.REMOVE_STUDENT);
+
+		addStudentButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("add-student")));
+		removeStudentButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("remove-student")));
+
+		return new HorizontalLayout(filterField, addStudentButton, removeStudentButton, createToggle());
 	}
 
 	private void updateStudents() {
