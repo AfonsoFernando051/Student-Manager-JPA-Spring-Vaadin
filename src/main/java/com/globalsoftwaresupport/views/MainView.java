@@ -3,6 +3,7 @@ package com.globalsoftwaresupport.views;
 import java.text.MessageFormat;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 
 import com.globalsoftwaresupport.constants.Constants;
 import com.globalsoftwaresupport.model.Student;
@@ -24,7 +25,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 
 @PageTitle(value = "Home")
 @Route(value = "")
-@PermitAll
+@RolesAllowed({"ROLE_ADMIN","ROLE_USER"})
 public class MainView extends VerticalLayout{
 	
 	private final StudentService studentService;

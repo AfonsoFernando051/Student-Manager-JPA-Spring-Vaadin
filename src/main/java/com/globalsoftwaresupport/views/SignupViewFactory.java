@@ -6,6 +6,7 @@ import com.globalsoftwaresupport.security.SecurityService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -13,6 +14,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 
+@org.springframework.stereotype.Component
 public class SignupViewFactory {
 
     @Autowired
@@ -27,9 +29,6 @@ public class SignupViewFactory {
         private Button signup;
         private Button cancel;
 
-        private SignupForm() {
-        }
-
         public SignupForm init() {
             username = new TextField("Username");
             password = new PasswordField("Password");
@@ -38,6 +37,8 @@ public class SignupViewFactory {
             cancel = new Button("Cancel"); // Fix: Corrected button label
 
             signup.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+            
             // Remove this line if tertiary style is not necessary: signup.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
             root = new VerticalLayout();
@@ -54,6 +55,19 @@ public class SignupViewFactory {
             root.add(passwordAgain);
             root.add(new HorizontalLayout(signup, cancel));
 
+            cancel.addClickListener(e -> {
+            	cancel.getUI().ifPresent(ui -> ui.navigate("login"));
+            });
+            
+            signup.addClickListener(e -> {
+            	if(!password.getValue().isEmpty() && password.getValue().equals(passwordAgain.getValue())) {
+            		securityService.save(username.getValue(), password.getValue());
+            		signup.getUI().ifPresent(ui -> ui.navigate("login"));
+            	}else {
+            		Notification.show("Passwords do not match...");
+            	}
+            });
+            
             return root;
         }
 

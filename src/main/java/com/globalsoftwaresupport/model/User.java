@@ -1,10 +1,13 @@
 package com.globalsoftwaresupport.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,15 +22,19 @@ public class User implements UserDetails{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column
+	@Column(name = "username")
 	private String username;
 	
-	@Column
+	@Column(name = "password")
 	private String password;
 
+	@Column
+	@Enumerated(EnumType.STRING)
+	private Role role = Role.ROLE_USER;
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return new ArrayList<GrantedAuthority>();
+		return Arrays.asList(role);
 	}
 
 	@Override
@@ -67,6 +74,14 @@ public class User implements UserDetails{
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+	
+	public Role getRole() {
+		return role;
+	}
+	
+	public void setRole(Role role) {
+		this.role = role;
 	}
 	
 }

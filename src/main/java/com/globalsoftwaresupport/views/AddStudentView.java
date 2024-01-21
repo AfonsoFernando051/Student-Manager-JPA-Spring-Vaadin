@@ -22,12 +22,15 @@ import com.vaadin.flow.router.Route;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
+
 import com.globalsoftwaresupport.constants.Constants;
 import com.globalsoftwaresupport.model.Status;
 import com.globalsoftwaresupport.model.Student;
 
 @PageTitle("Add Students")
 @Route("add-student")
+@RolesAllowed({"ROLE_ADMIN","ROLE_USER"})
 public class AddStudentView extends VerticalLayout{
 
 	private final StatusService statusService;

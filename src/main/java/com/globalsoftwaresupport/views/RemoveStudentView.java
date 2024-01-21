@@ -2,6 +2,8 @@ package com.globalsoftwaresupport.views;
 
 import java.util.Set;
 
+import javax.annotation.security.RolesAllowed;
+
 import com.globalsoftwaresupport.constants.Constants;
 import com.globalsoftwaresupport.model.Student;
 import com.globalsoftwaresupport.services.StudentService;
@@ -25,7 +27,8 @@ import com.vaadin.flow.router.Route;
 
 @PageTitle("Remove Students")
 @Route(value = "remove-student")
-public class RemoveStudentVIew extends VerticalLayout
+@RolesAllowed({"ROLE_ADMIN"})
+public class RemoveStudentView extends VerticalLayout
 	implements SelectionListener<Grid<Student>, Student>{
 	
 	private Grid<Student> grid;
@@ -34,7 +37,7 @@ public class RemoveStudentVIew extends VerticalLayout
 	private Button cancel;
 	private Set<Student> selected;
 	
-	public RemoveStudentVIew(StudentService studentService) {
+	public RemoveStudentView(StudentService studentService) {
 		this.studentService = studentService;
 	
 		setSizeFull();

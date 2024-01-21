@@ -47,6 +47,7 @@ public class LoginViewFactory {
 			signup.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
 			login.addClickListener(e -> login());
+			signup.addClickListener(e -> signup());
 			
 			root = new VerticalLayout();
 			root.setAlignItems(Alignment.CENTER);
@@ -56,6 +57,10 @@ public class LoginViewFactory {
 			return this;
 		}
 		
+		private void signup() {
+			login.getUI().ifPresent(ui -> ui.navigate("signup"));
+		}
+
 		private void login() {
 			try {
 				var auth = new UsernamePasswordAuthenticationToken(username.getValue(), password.getValue());

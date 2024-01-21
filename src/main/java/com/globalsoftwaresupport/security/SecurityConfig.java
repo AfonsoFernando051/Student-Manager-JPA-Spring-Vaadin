@@ -34,20 +34,20 @@ public class SecurityConfig extends VaadinWebSecurity{
 	
 	@Override
 	protected void configure(WebSecurity web) throws Exception{
-		web.ignoring().antMatchers("/images/**");
+		web.ignoring().antMatchers("/images/**", "/login", "/signup");
 		super.configure(web);
 	}
 	
 	@Bean
 	public AuthenticationManager authManager(HttpSecurity http) throws Exception{
-		var authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+		AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
 		authenticationManagerBuilder.authenticationProvider(authenticationProvider());
 		return authenticationManagerBuilder.build();
 	}
 
 	@Bean
-	private DaoAuthenticationProvider authenticationProvider() {
-		var provider = new DaoAuthenticationProvider();
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 		provider.setUserDetailsService(userDetailsService);
 		provider.setPasswordEncoder(encoder);
 		return provider;

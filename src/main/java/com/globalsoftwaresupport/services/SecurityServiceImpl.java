@@ -17,6 +17,7 @@ import com.vaadin.flow.server.VaadinServletRequest;
 @Service
 public class SecurityServiceImpl implements SecurityService, UserDetailsService{
 
+	@Autowired
 	private SecurityRepository securityRepository;
 	
 	@Autowired
