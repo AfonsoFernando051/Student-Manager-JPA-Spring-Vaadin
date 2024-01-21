@@ -5,14 +5,14 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-@PageTitle("Login")
-@Route(value = LoginView.PATH)
+@PageTitle("Signup")
+@Route(value = SignupView.PATH)
 @AnonymousAllowed
-public class LoginView extends VerticalLayout{
-	public static final String PATH = "/login";
+public class SignupView extends VerticalLayout{
+
+	public static final String PATH = "/signup";
 	
-	public LoginView(LoginViewFactory loginViewFactory) {
-		add(loginViewFactory.create());
+	public SignupView(SignupViewFactory signupFactory) {
+		add(signupFactory.create());
 	}
-	
 }
